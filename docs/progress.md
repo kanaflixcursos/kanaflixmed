@@ -40,6 +40,7 @@
 - Tela `/patients` validada localmente com estado vazio seguro.
 - Build/lint validados após o módulo de agenda.
 - Deploy do módulo de pacientes validado em produção; a rota `/patients` abre com estado seguro sem sessão.
+- Deploy da agenda validado em produção; a rota `/agenda` abre com estado seguro sem sessão e a navegação do dashboard funciona.
 
 ## Próximo bloco
 
