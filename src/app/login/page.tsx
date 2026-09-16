@@ -36,6 +36,19 @@ export default function LoginPage() {
     router.refresh();
   }
 
+  async function handleGoogleLogin() {
+    setError(null);
+    setIsLoading(true);
+    const { error: authError } = await createClient().auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=/` },
+    });
+    if (authError) {
+      setError(authError.message);
+      setIsLoading(false);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-[var(--background)] p-4 sm:p-6 lg:p-8">
       <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-6xl overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[var(--surface)] shadow-[0_24px_80px_rgba(23,23,22,0.08)] sm:min-h-[calc(100vh-3rem)] lg:grid-cols-[1.05fr_0.95fr]">
@@ -75,7 +88,14 @@ export default function LoginPage() {
               <p className="mt-3 text-sm leading-6 text-[var(--muted-foreground)]">Entre para acompanhar a operação da sua clínica.</p>
             </div>
 
-            <form className="mt-9 space-y-5" onSubmit={handleSubmit}>
+            <button className="mt-9 flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-sm font-semibold transition hover:bg-[var(--surface-muted)] disabled:cursor-not-allowed disabled:opacity-60" disabled={isLoading} type="button" onClick={handleGoogleLogin}>
+              <span className="grid size-5 place-items-center rounded-full text-base font-bold">G</span>
+              Continuar com Google
+            </button>
+
+            <div className="my-6 flex items-center gap-3 text-xs text-[var(--muted-foreground)]"><span className="h-px flex-1 bg-[var(--border)]" /><span>ou entre com e-mail</span><span className="h-px flex-1 bg-[var(--border)]" /></div>
+
+            <form className="space-y-5" onSubmit={handleSubmit}>
               <label className="block">
                 <span className="mb-2 block text-sm font-medium">E-mail profissional</span>
                 <span className="relative block">
@@ -125,7 +145,7 @@ export default function LoginPage() {
             </form>
 
             <p className="mt-8 text-center text-xs leading-5 text-[var(--muted-foreground)]">
-              O acesso é criado pelo administrador da sua clínica.
+              Ainda não tem uma conta? <Link className="font-medium text-[var(--brand)] hover:underline" href="/register">Criar cadastro</Link>
             </p>
             <p className="mt-3 text-center text-xs leading-5 text-[var(--muted-foreground)]">
               Primeiro acesso? <Link className="font-medium text-[var(--brand)] hover:underline" href="/onboarding">Configure sua clínica</Link>

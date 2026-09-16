@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
-const publicPaths = ["/login", "/auth/callback"];
+const publicPaths = ["/login", "/register", "/auth/callback"];
 
 /**
  * Next.js 16 calls this boundary `proxy` (formerly `middleware`).
