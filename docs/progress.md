@@ -4,7 +4,7 @@
 
 - Fase 0: bootstrap e publicação inicial concluídos.
 - Fase 1: shell visual inicial entregue; autenticação e tenancy ainda pendentes.
-- Fase 3: dashboard visual inicial entregue; agenda funcional ainda pendente.
+- Fase 3: dashboard visual inicial entregue; agenda funcional em implementação.
 
 ## Entregue neste ciclo
 
@@ -24,6 +24,8 @@
 - Onboarding inicial da clínica via RPC `create_organization`, criando organização e primeiro membership ADMIN em uma operação segura.
 - Endpoint `/api/dashboard` e hidratação da agenda com dados Supabase quando existe sessão autenticada.
 - Módulo inicial de pacientes: listagem, busca, formulário de cadastro e API `GET/POST /api/patients` protegida por sessão e RLS.
+- Módulo inicial de agenda: visualização por dia, criação de agendamentos, APIs `GET/POST /api/appointments` e catálogo ativo de serviços em `GET/POST /api/services`.
+- Onboarding agora cria automaticamente o serviço inicial “Consulta” (30 minutos, sem preço definido).
 
 ## Verificações
 
@@ -36,6 +38,8 @@
 - `/api/dashboard` validado sem sessão, retornando contexto nulo sem expor dados.
 - `/api/patients` validado sem sessão, retornando `401`.
 - Tela `/patients` validada localmente com estado vazio seguro.
+- Build/lint validados após o módulo de agenda.
+- Deploy do módulo de pacientes validado em produção; a rota `/patients` abre com estado seguro sem sessão.
 
 ## Próximo bloco
 
