@@ -19,6 +19,8 @@
 - Repositório GitHub conectado: `kanaflixcursos/kanaflixmed`, branch `main`.
 - Deploy de produção publicado na Vercel: https://kanaflixmed.vercel.app
 - Variáveis `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` configuradas na Vercel para Production.
+- Fluxo inicial de autenticação Supabase: tela de login, callback de sessão e proxy compatível com Next.js 16.
+- Camada de consultas protegidas para contexto da organização e agenda diária, pronta para ligar ao dashboard.
 
 ## Verificações
 
@@ -26,12 +28,13 @@
 - `pnpm build` — passou.
 - Validação manual no navegador local — página renderizada em `http://localhost:3000`.
 - Deploy de produção — concluído com status Ready na Vercel.
+- Tela `/login` validada localmente.
 
 ## Próximo bloco
 
-1. Criar o primeiro fluxo de autenticação (login, convite e recuperação).
-2. Criar o onboarding da organização e associação do primeiro usuário.
-3. Substituir dados estáticos da agenda por consultas Supabase protegidas por RLS.
+1. Criar o onboarding da organização e associação do primeiro usuário.
+2. Ativar `KANAFLIX_REQUIRE_AUTH=true` depois de criar o primeiro administrador no Supabase Auth.
+3. Ligar a camada de consultas ao dashboard e substituir os dados demonstrativos.
 4. Implementar CRUD de pacientes, serviços, consultas e lançamentos financeiros.
 5. Adicionar testes de autorização, fluxo de agenda e smoke test de produção.
 
@@ -39,4 +42,4 @@
 
 - A migration inicial foi aplicada; ainda precisa ser exercitada com dados de teste e cenários RLS.
 - O fluxo de convite e MFA depende da configuração de Auth no Supabase.
-- O projeto usa dados demonstrativos enquanto a autenticação não estiver ativa.
+- A proteção está opt-in enquanto não existe um administrador inicial; o projeto usa dados demonstrativos nesse período.
