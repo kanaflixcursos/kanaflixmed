@@ -25,6 +25,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type NavItem = { label: string; icon: typeof LayoutDashboard };
 
@@ -58,12 +59,13 @@ function Badge({ children, tone }: { children: React.ReactNode; tone: string }) 
 }
 
 function Sidebar({ active, setActive, open, onClose }: { active: string; setActive: (label: string) => void; open: boolean; onClose: () => void }) {
+  const router = useRouter();
   return <>
     <AnimatePresence>{open && <motion.button aria-label="Fechar menu" className="fixed inset-0 z-30 bg-foreground/20 lg:hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />}</AnimatePresence>
     <aside className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-border bg-surface px-5 py-7 transition-transform duration-200 lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}>
       <div className="flex items-center justify-between px-3"><div className="flex items-center gap-2.5"><div className="grid size-8 place-items-center rounded-xl bg-brand text-brand-foreground"><Stethoscope size={18} strokeWidth={2.1} /></div><span className="text-[19px] font-medium tracking-[-0.04em]">Kanaflix <span className="text-brand">MED</span></span></div><button className="grid size-9 place-items-center rounded-xl text-muted-foreground hover:bg-surface-muted hover:text-foreground lg:hidden" onClick={onClose} aria-label="Fechar menu"><X size={18} /></button></div>
       <button className="mt-12 flex items-center gap-3 rounded-2xl bg-surface-muted px-3 py-2.5 text-left hover:bg-surface-muted/80"><span className="grid size-9 place-items-center rounded-xl bg-brand-soft text-sm font-medium text-brand">KM</span><span className="min-w-0 flex-1"><span className="block truncate text-sm font-medium">Clínica Movimento</span><span className="block text-xs text-muted-foreground">Workspace atual</span></span><ChevronDown size={16} className="text-muted-foreground" /></button>
-      <nav className="mt-7 space-y-1.5" aria-label="Navegação principal">{navItems.map((item) => { const Icon = item.icon; const isActive = active === item.label; return <button key={item.label} onClick={() => { setActive(item.label); onClose(); }} className={`flex h-11 w-full items-center gap-3 rounded-2xl px-3.5 text-left text-sm transition-colors ${isActive ? "bg-brand-soft font-medium text-foreground" : "text-muted-foreground hover:bg-surface-muted hover:text-foreground"}`}><Icon size={19} strokeWidth={1.9} /><span>{item.label}</span>{item.label === "Hoje" && <span className="ml-auto rounded-full bg-brand px-2 py-0.5 text-[11px] font-medium text-brand-foreground">5</span>}</button>; })}</nav>
+      <nav className="mt-7 space-y-1.5" aria-label="Navegação principal">{navItems.map((item) => { const Icon = item.icon; const isActive = active === item.label; return <button key={item.label} onClick={() => { setActive(item.label); onClose(); if (item.label === "Pacientes") router.push("/patients"); }} className={`flex h-11 w-full items-center gap-3 rounded-2xl px-3.5 text-left text-sm transition-colors ${isActive ? "bg-brand-soft font-medium text-foreground" : "text-muted-foreground hover:bg-surface-muted hover:text-foreground"}`}><Icon size={19} strokeWidth={1.9} /><span>{item.label}</span>{item.label === "Hoje" && <span className="ml-auto rounded-full bg-brand px-2 py-0.5 text-[11px] font-medium text-brand-foreground">5</span>}</button>; })}</nav>
       <div className="mt-auto border-t border-border pt-5"><button className="flex h-11 w-full items-center gap-3 rounded-2xl px-3.5 text-left text-sm text-muted-foreground hover:bg-surface-muted hover:text-foreground"><Settings2 size={19} strokeWidth={1.9} /><span>Configurações</span></button><div className="mt-5 flex items-center gap-3 px-3.5"><span className="grid size-9 place-items-center rounded-full bg-[#e8dfd8] text-xs font-medium text-[#6d5141]">AR</span><span className="min-w-0 flex-1"><span className="block truncate text-sm font-medium">Ana Ribeiro</span><span className="block text-xs text-muted-foreground">Administradora</span></span><MoreHorizontal size={17} className="text-muted-foreground" /></div></div>
     </aside>
   </>;

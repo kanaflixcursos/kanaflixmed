@@ -23,6 +23,7 @@
 - Camada de consultas protegidas para contexto da organização e agenda diária, pronta para ligar ao dashboard.
 - Onboarding inicial da clínica via RPC `create_organization`, criando organização e primeiro membership ADMIN em uma operação segura.
 - Endpoint `/api/dashboard` e hidratação da agenda com dados Supabase quando existe sessão autenticada.
+- Módulo inicial de pacientes: listagem, busca, formulário de cadastro e API `GET/POST /api/patients` protegida por sessão e RLS.
 
 ## Verificações
 
@@ -33,12 +34,14 @@
 - Tela `/login` validada localmente.
 - Tela `/onboarding` validada localmente.
 - `/api/dashboard` validado sem sessão, retornando contexto nulo sem expor dados.
+- `/api/patients` validado sem sessão, retornando `401`.
+- Tela `/patients` validada localmente com estado vazio seguro.
 
 ## Próximo bloco
 
 1. Criar o primeiro usuário administrador e exercitar o onboarding real.
 2. Ativar `KANAFLIX_REQUIRE_AUTH=true` depois de validar o primeiro acesso.
-3. Implementar CRUD de pacientes, serviços, consultas e lançamentos financeiros.
+3. Adicionar edição/inativação de pacientes e histórico de alterações.
 4. Adicionar testes de autorização, fluxo de agenda e smoke test de produção.
 
 ## Riscos e decisões pendentes
