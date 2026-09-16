@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, ShieldCheck } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -125,6 +126,9 @@ export default function LoginPage() {
 
             <p className="mt-8 text-center text-xs leading-5 text-[var(--muted-foreground)]">
               O acesso é criado pelo administrador da sua clínica.
+            </p>
+            <p className="mt-3 text-center text-xs leading-5 text-[var(--muted-foreground)]">
+              Primeiro acesso? <Link className="font-medium text-[var(--brand)] hover:underline" href="/onboarding">Configure sua clínica</Link>
             </p>
           </div>
         </section>

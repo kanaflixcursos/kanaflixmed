@@ -29,7 +29,7 @@ export async function getDashboardContext(): Promise<DashboardContext | null> {
     .from("memberships")
     .select("organization_id, role, organizations(name)")
     .eq("user_id", user.id)
-    .eq("status", "active")
+    .eq("status", "ACTIVE")
     .order("created_at", { ascending: true })
     .maybeSingle();
 
