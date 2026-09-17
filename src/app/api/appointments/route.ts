@@ -11,6 +11,18 @@ const appointmentSchema = z.object({
   endsAt: timestamp,
   operationalNote: z.string().trim().max(2000).optional().default(""),
 });
+const appointmentStatusSchema = z.enum(["SCHEDULED", "CONFIRMED", "CHECKED_IN", "IN_PROGRESS", "COMPLETED", "NO_SHOW", "CANCELLED"]);
+const appointmentStatusUpdateSchema = z.object({ id: z.string().uuid(), status: appointmentStatusSchema });
+
+const allowedTransitions: Record<string, readonly string[]> = {
+  SCHEDULED: ["CONFIRMED", "CHECKED_IN", "NO_SHOW", "CANCELLED"],
+  CONFIRMED: ["CHECKED_IN", "NO_SHOW", "CANCELLED"],
+  CHECKED_IN: ["IN_PROGRESS", "NO_SHOW", "CANCELLED"],
+  IN_PROGRESS: ["COMPLETED"],
+  COMPLETED: [],
+  NO_SHOW: [],
+  CANCELLED: [],
+};
 
 export const dynamic = "force-dynamic";
 
@@ -103,5 +115,73 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await supabase.from("appointment_status_events").insert({
+    organization_id: context.organizationId,
+    appointment_id: data.id,
+    from_status: null,
+    to_status: "SCHEDULED",
+    actor_user_id: context.userId,
+  });
+  await supabase.from("audit_events").insert({
+    organization_id: context.organizationId,
+    actor_user_id: context.userId,
+    action: "APPOINTMENT_CREATED",
+    resource_type: "APPOINTMENT",
+    resource_id: data.id,
+  });
+
   return NextResponse.json({ appointment: data }, { status: 201 });
+}
+
+export async function PATCH(request: NextRequest) {
+  const context = await getDashboardContext();
+  if (!context) return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
+
+  const parsed = appointmentStatusUpdateSchema.safeParse(await request.json());
+  if (!parsed.success) return NextResponse.json({ error: "INVALID_APPOINTMENT_STATUS", details: parsed.error.flatten() }, { status: 400 });
+
+  const { id, status: nextStatus } = parsed.data;
+  const supabase = await createClient();
+  const { data: current, error: currentError } = await supabase
+    .from("appointments")
+    .select("id, status, version")
+    .eq("id", id)
+    .eq("organization_id", context.organizationId)
+    .maybeSingle();
+
+  if (currentError) return NextResponse.json({ error: currentError.message }, { status: 500 });
+  if (!current) return NextResponse.json({ error: "APPOINTMENT_NOT_FOUND" }, { status: 404 });
+  if (current.status === nextStatus) return NextResponse.json({ error: "APPOINTMENT_STATUS_UNCHANGED" }, { status: 400 });
+  if (!allowedTransitions[current.status]?.includes(nextStatus)) return NextResponse.json({ error: "INVALID_STATUS_TRANSITION" }, { status: 409 });
+
+  const { data, error } = await supabase
+    .from("appointments")
+    .update({ status: nextStatus, version: current.version + 1 })
+    .eq("id", id)
+    .eq("organization_id", context.organizationId)
+    .eq("status", current.status)
+    .select("id, starts_at, ends_at, status, operational_note, price_cents, patient_id, service_id")
+    .maybeSingle();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (!data) return NextResponse.json({ error: "APPOINTMENT_CONFLICT" }, { status: 409 });
+
+  await supabase.from("appointment_status_events").insert({
+    organization_id: context.organizationId,
+    appointment_id: data.id,
+    from_status: current.status,
+    to_status: nextStatus,
+    actor_user_id: context.userId,
+  });
+  await supabase.from("audit_events").insert({
+    organization_id: context.organizationId,
+    actor_user_id: context.userId,
+    action: "APPOINTMENT_STATUS_UPDATED",
+    resource_type: "APPOINTMENT",
+    resource_id: data.id,
+    metadata: { from: current.status, to: nextStatus },
+  });
+
+  return NextResponse.json({ appointment: data });
 }
