@@ -29,6 +29,8 @@
 - Alterações de pacientes registram eventos `PATIENT_CREATED`, `PATIENT_UPDATED` e `PATIENT_ARCHIVED` na trilha de auditoria.
 - Agenda integrada ao paciente: o nome do paciente abre seu detalhe, e o atendimento tem transições operacionais de confirmação, check-in, início e conclusão.
 - Mudanças de status geram eventos em `appointment_status_events` e na trilha de auditoria, com validação de transições e proteção contra atualização concorrente.
+- Atendimento concluído com valor agora gera automaticamente uma única cobrança `RECEIVABLE` vinculada ao agendamento e ao paciente via trigger no Supabase.
+- Tela `/financeiro` e `GET /api/finance` entregues para perfis ADMIN, RECEPTION e FINANCE, com totais em aberto, recebidos e em atraso.
 - Módulo inicial de agenda: visualização por dia, criação de agendamentos, APIs `GET/POST /api/appointments` e catálogo ativo de serviços em `GET/POST /api/services`.
 - Onboarding agora cria automaticamente o serviço inicial “Consulta” (30 minutos, sem preço definido).
 
@@ -49,13 +51,14 @@
 - Lint e build validados após edição/inativação de pacientes.
 - Lint e build validados após detalhe e histórico do paciente.
 - Lint e build validados após integração de status da agenda com o paciente.
+- Lint e build validados após integração agenda-financeiro; migração do trigger aplicada no projeto Supabase de produção.
 
 ## Próximo bloco
 
 1. Criar o primeiro usuário administrador e exercitar o onboarding real.
 2. Ativar `KANAFLIX_REQUIRE_AUTH=true` depois de validar o primeiro acesso.
 3. Adicionar testes de autorização, fluxo de agenda e smoke test de produção.
-4. Integrar atendimento e financeiro ao contexto do paciente e da agenda.
+4. Adicionar recebimento e baixa de cobranças, com idempotência e trilha de estorno.
 
 ## Riscos e decisões pendentes
 
