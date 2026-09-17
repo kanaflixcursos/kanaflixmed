@@ -14,7 +14,7 @@ export async function GET() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("financial_entries")
-    .select("id, appointment_id, patient_id, type, status, description, amount_cents, due_date, created_at, patients(display_name), appointments(starts_at)")
+    .select("id, appointment_id, patient_id, type, status, description, amount_cents, due_date, created_at, patients(display_name), appointments(starts_at), payments(amount_cents, reversed_payment_id)")
     .eq("organization_id", context.organizationId)
     .order("due_date", { ascending: false })
     .order("created_at", { ascending: false })
@@ -25,6 +25,8 @@ export async function GET() {
   const entries = (data ?? []).map((entry) => {
     const patient = Array.isArray(entry.patients) ? entry.patients[0] : entry.patients;
     const appointment = Array.isArray(entry.appointments) ? entry.appointments[0] : entry.appointments;
+    const payments = Array.isArray(entry.payments) ? entry.payments : [];
+    const paidCents = payments.reduce((sum, payment) => sum + (payment.reversed_payment_id ? 0 : payment.amount_cents), 0);
     return {
       id: entry.id,
       appointmentId: entry.appointment_id,
@@ -35,6 +37,8 @@ export async function GET() {
       status: entry.status,
       description: entry.description,
       amountCents: entry.amount_cents,
+      paidCents,
+      remainingCents: Math.max(entry.amount_cents - paidCents, 0),
       dueDate: entry.due_date,
       createdAt: entry.created_at,
     };
@@ -42,8 +46,8 @@ export async function GET() {
 
   const totals = entries.reduce((summary, entry) => {
     if (entry.status === "PAID") summary.paidCents += entry.amountCents;
-    if (entry.status === "PENDING" || entry.status === "PARTIAL" || entry.status === "OVERDUE") summary.openCents += entry.amountCents;
-    if (entry.status === "OVERDUE") summary.overdueCents += entry.amountCents;
+    if (entry.status === "PENDING" || entry.status === "PARTIAL" || entry.status === "OVERDUE") summary.openCents += entry.remainingCents;
+    if (entry.status === "OVERDUE") summary.overdueCents += entry.remainingCents;
     return summary;
   }, { paidCents: 0, openCents: 0, overdueCents: 0 });
 
