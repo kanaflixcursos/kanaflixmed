@@ -25,6 +25,8 @@
 - Endpoint `/api/dashboard` e hidratação da agenda com dados Supabase quando existe sessão autenticada.
 - Módulo inicial de pacientes: listagem, busca, formulário de cadastro e API `GET/POST /api/patients` protegida por sessão e RLS.
 - Ciclo de pacientes ampliado: edição via `PATCH /api/patients` e inativação reversível via `DELETE /api/patients`, preservando histórico e removendo inativos dos novos fluxos.
+- Detalhe do paciente em `/patients/[id]`, com dados cadastrais e histórico operacional dos agendamentos vinculados.
+- Alterações de pacientes registram eventos `PATIENT_CREATED`, `PATIENT_UPDATED` e `PATIENT_ARCHIVED` na trilha de auditoria.
 - Módulo inicial de agenda: visualização por dia, criação de agendamentos, APIs `GET/POST /api/appointments` e catálogo ativo de serviços em `GET/POST /api/services`.
 - Onboarding agora cria automaticamente o serviço inicial “Consulta” (30 minutos, sem preço definido).
 
@@ -43,13 +45,14 @@
 - Deploy do módulo de pacientes validado em produção; a rota `/patients` abre com estado seguro sem sessão.
 - Deploy da agenda validado em produção; a rota `/agenda` abre com estado seguro sem sessão e a navegação do dashboard funciona.
 - Lint e build validados após edição/inativação de pacientes.
+- Lint e build validados após detalhe e histórico do paciente.
 
 ## Próximo bloco
 
 1. Criar o primeiro usuário administrador e exercitar o onboarding real.
 2. Ativar `KANAFLIX_REQUIRE_AUTH=true` depois de validar o primeiro acesso.
-3. Adicionar histórico de alterações e detalhe do paciente.
-4. Adicionar testes de autorização, fluxo de agenda e smoke test de produção.
+3. Adicionar testes de autorização, fluxo de agenda e smoke test de produção.
+4. Integrar check-in, atendimento e financeiro ao contexto do paciente e da agenda.
 
 ## Riscos e decisões pendentes
 

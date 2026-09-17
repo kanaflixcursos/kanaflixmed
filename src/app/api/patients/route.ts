@@ -18,6 +18,17 @@ const patientUpdateSchema = patientSchema.extend({
 
 export const dynamic = "force-dynamic";
 
+async function writeAudit(action: string, resourceId: string, organizationId: string, userId: string) {
+  const supabase = await createClient();
+  await supabase.from("audit_events").insert({
+    organization_id: organizationId,
+    actor_user_id: userId,
+    action,
+    resource_type: "PATIENT",
+    resource_id: resourceId,
+  });
+}
+
 export async function GET(request: NextRequest) {
   const context = await getDashboardContext();
   if (!context) return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
@@ -70,6 +81,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: error.code === "23505" ? "PATIENT_ALREADY_EXISTS" : error.message }, { status });
   }
 
+  await writeAudit("PATIENT_CREATED", data.id, context.organizationId, context.userId);
+
   return NextResponse.json({ patient: data }, { status: 201 });
 }
 
@@ -106,6 +119,8 @@ export async function PATCH(request: NextRequest) {
   }
   if (!data) return NextResponse.json({ error: "PATIENT_NOT_FOUND" }, { status: 404 });
 
+  await writeAudit("PATIENT_UPDATED", data.id, context.organizationId, context.userId);
+
   return NextResponse.json({ patient: data });
 }
 
@@ -128,6 +143,8 @@ export async function DELETE(request: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!data) return NextResponse.json({ error: "PATIENT_NOT_FOUND" }, { status: 404 });
+
+  await writeAudit("PATIENT_ARCHIVED", data.id, context.organizationId, context.userId);
 
   return NextResponse.json({ success: true });
 }
