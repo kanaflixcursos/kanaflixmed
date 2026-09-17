@@ -12,6 +12,10 @@ const patientSchema = z.object({
   notes: z.string().trim().max(2000).optional().default(""),
 });
 
+const patientUpdateSchema = patientSchema.extend({
+  id: z.string().uuid(),
+});
+
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
@@ -22,7 +26,7 @@ export async function GET(request: NextRequest) {
   const supabase = await createClient();
   let query = supabase
     .from("patients")
-    .select("id, record_number, display_name, birth_date, phone_e164, email, notes, created_at")
+    .select("id, record_number, display_name, legal_name, birth_date, phone_e164, email, notes, created_at")
     .eq("organization_id", context.organizationId)
     .eq("active", true)
     .order("display_name", { ascending: true })
@@ -58,7 +62,7 @@ export async function POST(request: NextRequest) {
       email: values.email || null,
       notes: values.notes || null,
     })
-    .select("id, record_number, display_name, birth_date, phone_e164, email, notes, created_at")
+    .select("id, record_number, display_name, legal_name, birth_date, phone_e164, email, notes, created_at")
     .single();
 
   if (error) {
@@ -67,4 +71,63 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json({ patient: data }, { status: 201 });
+}
+
+export async function PATCH(request: NextRequest) {
+  const context = await getDashboardContext();
+  if (!context) return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
+
+  const parsed = patientUpdateSchema.safeParse(await request.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "INVALID_PATIENT", details: parsed.error.flatten() }, { status: 400 });
+  }
+
+  const { id, ...values } = parsed.data;
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("patients")
+    .update({
+      display_name: values.displayName,
+      legal_name: values.legalName || null,
+      birth_date: values.birthDate || null,
+      phone_e164: values.phone || null,
+      email: values.email || null,
+      notes: values.notes || null,
+    })
+    .eq("id", id)
+    .eq("organization_id", context.organizationId)
+    .eq("active", true)
+    .select("id, record_number, display_name, legal_name, birth_date, phone_e164, email, notes, created_at")
+    .maybeSingle();
+
+  if (error) {
+    const status = error.code === "23505" ? 409 : 500;
+    return NextResponse.json({ error: error.code === "23505" ? "PATIENT_ALREADY_EXISTS" : error.message }, { status });
+  }
+  if (!data) return NextResponse.json({ error: "PATIENT_NOT_FOUND" }, { status: 404 });
+
+  return NextResponse.json({ patient: data });
+}
+
+export async function DELETE(request: NextRequest) {
+  const context = await getDashboardContext();
+  if (!context) return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
+
+  const parsed = z.object({ id: z.string().uuid() }).safeParse(await request.json());
+  if (!parsed.success) return NextResponse.json({ error: "INVALID_PATIENT" }, { status: 400 });
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("patients")
+    .update({ active: false })
+    .eq("id", parsed.data.id)
+    .eq("organization_id", context.organizationId)
+    .eq("active", true)
+    .select("id")
+    .maybeSingle();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (!data) return NextResponse.json({ error: "PATIENT_NOT_FOUND" }, { status: 404 });
+
+  return NextResponse.json({ success: true });
 }
