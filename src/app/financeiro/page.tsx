@@ -84,7 +84,7 @@ export default function FinanceiroPage() {
   return (
     <main className="min-h-screen bg-background px-5 py-8 sm:px-8 lg:px-12 lg:py-12">
       <div className="mx-auto max-w-7xl">
-        <button className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground" onClick={() => router.push("/")}><ArrowLeft size={16} />Voltar para visão geral</button>
+        <button className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground" onClick={() => router.push("/agenda")}><ArrowLeft size={16} />Voltar para agenda</button>
         <header className="flex flex-col gap-5 border-b border-border pb-8 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-sm font-medium text-brand">Controle financeiro</p><h1 className="mt-2 text-4xl font-medium tracking-[-0.05em] sm:text-5xl">Financeiro</h1><p className="mt-3 text-base leading-7 text-muted-foreground">Acompanhe cobranças geradas pelos atendimentos concluídos.</p></div><Link className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-border px-4 text-sm font-medium transition hover:border-brand hover:text-brand" href="/agenda"><CalendarDays size={16} />Ver agenda</Link></header>
 
         {error ? <div className="mt-6 rounded-2xl border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">{error}</div> : null}
