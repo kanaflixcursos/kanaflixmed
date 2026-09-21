@@ -32,6 +32,7 @@
 - Atendimento concluído com valor agora gera automaticamente uma única cobrança `RECEIVABLE` vinculada ao agendamento e ao paciente via trigger no Supabase.
 - Tela `/financeiro` e `GET /api/finance` entregues para perfis ADMIN, RECEPTION e FINANCE, com totais em aberto, recebidos e em atraso.
 - Recebimentos parciais ou integrais agora usam `POST /api/finance/payments`, função transacional idempotente no Supabase e auditoria `FINANCE_PAYMENT_RECORDED`.
+- A rota `/` deixou de exibir dados demonstrativos: deslogados vão para `/login`, usuários com clínica vão para `/agenda` e primeiro acesso vai para `/onboarding`.
 - Módulo inicial de agenda: visualização por dia, criação de agendamentos, APIs `GET/POST /api/appointments` e catálogo ativo de serviços em `GET/POST /api/services`.
 - Onboarding agora cria automaticamente o serviço inicial “Consulta” (30 minutos, sem preço definido).
 
@@ -54,6 +55,7 @@
 - Lint e build validados após integração de status da agenda com o paciente.
 - Lint e build validados após integração agenda-financeiro; migração do trigger aplicada no projeto Supabase de produção.
 - Lint e build validados após fluxo de recebimento; função `record_finance_payment` aplicada no projeto Supabase de produção.
+- Lint e build validados após remoção da home demonstrativa; deploy verificado com redirecionamento público de `/` para `/login`.
 
 ## Próximo bloco
 
