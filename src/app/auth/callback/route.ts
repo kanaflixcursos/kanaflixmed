@@ -5,9 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code");
   const next = request.nextUrl.searchParams.get("next");
-  const redirectPath = next?.startsWith("/") ? next : "/agenda";
-  const redirectUrl = new URL(redirectPath, request.url);
-  const response = NextResponse.redirect(redirectUrl);
+  const response = NextResponse.redirect(new URL("/login?error=callback", request.url));
   const cookieStore = await cookies();
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -27,6 +25,29 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  await supabase.auth.exchangeCodeForSession(code);
+  const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+  if (exchangeError) return response;
+
+  let redirectPath = next?.startsWith("/") && next !== "/auth/post-login" ? next : "/agenda";
+  if (next === "/auth/post-login") {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return response;
+
+    const { data: memberships, error: membershipError } = await supabase
+      .from("memberships")
+      .select("organization_id")
+      .eq("user_id", user.id)
+      .eq("status", "ACTIVE")
+      .limit(1);
+
+    if (membershipError) {
+      response.headers.set("Location", new URL("/login?error=clinic", request.url).toString());
+      return response;
+    }
+
+    redirectPath = memberships?.length ? "/agenda" : "/onboarding";
+  }
+
+  response.headers.set("Location", new URL(redirectPath, request.url).toString());
   return response;
 }

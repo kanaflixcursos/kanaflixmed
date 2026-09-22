@@ -8,6 +8,22 @@ import { createClient } from "@/lib/supabase/client";
 
 const defaultError = "Não foi possível entrar. Confira os dados e tente novamente.";
 
+async function getPostAuthPath() {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data: memberships, error } = await supabase
+    .from("memberships")
+    .select("organization_id")
+    .eq("user_id", user.id)
+    .eq("status", "ACTIVE")
+    .limit(1);
+
+  if (error) throw error;
+  return memberships?.length ? "/agenda" : "/onboarding";
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -32,8 +48,14 @@ export default function LoginPage() {
       return;
     }
 
-    router.replace("/agenda");
-    router.refresh();
+    try {
+      const postAuthPath = await getPostAuthPath();
+      router.replace(postAuthPath ?? "/onboarding");
+      router.refresh();
+    } catch (destinationError) {
+      setError(destinationError instanceof Error ? destinationError.message : "Não foi possível abrir sua clínica.");
+      setIsLoading(false);
+    }
   }
 
   async function handleGoogleLogin() {
@@ -41,7 +63,7 @@ export default function LoginPage() {
     setIsLoading(true);
     const { error: authError } = await createClient().auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback?next=/agenda` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=/auth/post-login` },
     });
     if (authError) {
       setError(authError.message);
@@ -146,9 +168,6 @@ export default function LoginPage() {
 
             <p className="mt-8 text-center text-xs leading-5 text-[var(--muted-foreground)]">
               Ainda não tem uma conta? <Link className="font-medium text-[var(--brand)] hover:underline" href="/register">Criar cadastro</Link>
-            </p>
-            <p className="mt-3 text-center text-xs leading-5 text-[var(--muted-foreground)]">
-              Primeiro acesso? <Link className="font-medium text-[var(--brand)] hover:underline" href="/onboarding">Configure sua clínica</Link>
             </p>
           </div>
         </section>

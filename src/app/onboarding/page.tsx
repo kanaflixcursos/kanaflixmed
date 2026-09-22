@@ -73,7 +73,7 @@ export default function OnboardingPage() {
         <div className="mx-auto mt-16 max-w-xl">
           <div className="text-center">
             <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-[var(--brand-soft)] text-[var(--brand)]"><Building2 className="size-6" /></span>
-            <p className="mt-6 text-sm font-medium text-[var(--brand)]">Primeiro acesso</p>
+            <p className="mt-6 text-sm font-medium text-[var(--brand)]">Configuração inicial</p>
             <h1 className="mt-2 text-3xl font-semibold tracking-[-0.05em] sm:text-4xl">Configure sua clínica</h1>
             <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[var(--muted-foreground)]">Crie o workspace que sua equipe vai usar para organizar agenda, pacientes e financeiro.</p>
           </div>
