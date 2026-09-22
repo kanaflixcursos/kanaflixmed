@@ -1,15 +1,5 @@
 import { redirect } from "next/navigation";
-import { getDashboardContext } from "@/lib/data/dashboard";
-import { createClient } from "@/lib/supabase/server";
 
-export const dynamic = "force-dynamic";
-
-export default async function Home() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) redirect("/login");
-
-  const context = await getDashboardContext();
-  redirect(context ? "/agenda" : "/onboarding");
+export default function Home() {
+  redirect("/login");
 }

@@ -55,7 +55,7 @@ export default function OnboardingPage() {
       return;
     }
 
-    router.replace("/");
+    router.replace("/agenda");
     router.refresh();
   }
 

@@ -32,7 +32,7 @@ export default function LoginPage() {
       return;
     }
 
-    router.replace("/");
+    router.replace("/agenda");
     router.refresh();
   }
 
@@ -41,7 +41,7 @@ export default function LoginPage() {
     setIsLoading(true);
     const { error: authError } = await createClient().auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback?next=/` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=/agenda` },
     });
     if (authError) {
       setError(authError.message);

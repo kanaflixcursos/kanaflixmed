@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code");
   const next = request.nextUrl.searchParams.get("next");
-  const redirectPath = next?.startsWith("/") ? next : "/";
+  const redirectPath = next?.startsWith("/") ? next : "/agenda";
   const redirectUrl = new URL(redirectPath, request.url);
   const response = NextResponse.redirect(redirectUrl);
   const cookieStore = await cookies();
