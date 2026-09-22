@@ -1,9 +1,9 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { Archive, ArrowLeft, CalendarDays, Mail, Pencil, Phone, Plus, Search, UserRound, X } from "lucide-react";
+import { Archive, CalendarDays, Mail, Pencil, Phone, Plus, Search, UserRound, X } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+
 
 type Patient = {
   id: string;
@@ -37,7 +37,7 @@ function formatDate(value: string | null) {
 }
 
 export default function PatientsPage() {
-  const router = useRouter();
+
   const [patients, setPatients] = useState<Patient[]>([]);
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -134,7 +134,6 @@ export default function PatientsPage() {
   return (
     <main className="min-h-screen bg-background px-5 py-8 sm:px-8 lg:px-12 lg:py-12">
       <div className="mx-auto max-w-7xl">
-        <button className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground" onClick={() => router.push("/agenda")}><ArrowLeft size={16} />Voltar para agenda</button>
         <header className="flex flex-col gap-5 border-b border-border pb-8 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-sm font-medium text-brand">Relacionamento</p><h1 className="mt-2 text-4xl font-medium tracking-[-0.05em] sm:text-5xl">Pacientes</h1><p className="mt-3 text-base leading-7 text-muted-foreground">Encontre e organize os pacientes da sua clínica.</p></div><button className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-brand px-5 text-sm font-medium text-brand-foreground shadow-sm transition hover:bg-brand-hover" onClick={openNewPatient}><Plus size={18} />Novo paciente</button></header>
 
         <section className="mt-8 rounded-3xl border border-border bg-surface shadow-sm"><div className="flex flex-col gap-4 border-b border-border p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"><div><h2 className="text-lg font-medium">Todos os pacientes</h2><p className="mt-1 text-sm text-muted-foreground">{patients.length} cadastro{patients.length === 1 ? "" : "s"} ativo{patients.length === 1 ? "" : "s"}</p></div><label className="relative block sm:w-80"><Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><input className="h-11 w-full rounded-xl border border-border bg-background pl-10 pr-4 text-sm outline-none transition focus:border-brand" placeholder="Buscar por nome" value={search} onChange={(event) => setSearch(event.target.value)} /></label></div>

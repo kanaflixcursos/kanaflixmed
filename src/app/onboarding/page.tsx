@@ -64,8 +64,8 @@ export default function OnboardingPage() {
       <div className="mx-auto max-w-5xl">
         <header className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="grid size-10 place-items-center rounded-xl bg-[var(--brand)] text-sm font-semibold text-white">KM</span>
-            <span className="text-lg font-semibold tracking-[-0.03em]">Kanaflix MED</span>
+            <span className="grid size-10 place-items-center rounded-xl bg-[var(--brand)] text-sm font-semibold text-white">CC</span>
+            <span className="text-lg font-semibold tracking-[-0.03em]">Central Clínica</span>
           </div>
           <span className="hidden items-center gap-2 text-xs text-[var(--muted-foreground)] sm:flex"><ShieldCheck className="size-4 text-[var(--success)]" /> Configuração segura</span>
         </header>
@@ -75,7 +75,7 @@ export default function OnboardingPage() {
             <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-[var(--brand-soft)] text-[var(--brand)]"><Building2 className="size-6" /></span>
             <p className="mt-6 text-sm font-medium text-[var(--brand)]">Configuração inicial</p>
             <h1 className="mt-2 text-3xl font-semibold tracking-[-0.05em] sm:text-4xl">Configure sua clínica</h1>
-            <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[var(--muted-foreground)]">Crie o workspace que sua equipe vai usar para organizar agenda, pacientes e financeiro.</p>
+            <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[var(--muted-foreground)]">Crie o ambiente que sua equipe vai usar para organizar agenda, pacientes e financeiro.</p>
           </div>
 
           <form className="mt-10 space-y-5 rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-sm sm:p-8" onSubmit={handleSubmit}>
@@ -83,7 +83,7 @@ export default function OnboardingPage() {
             <label className="block"><span className="mb-2 block text-sm font-medium">Identificador da clínica</span><input className="h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-4 text-sm focus:border-[var(--brand)] focus:bg-[var(--surface)] focus:outline-none" placeholder="clinica-movimento" value={slug} onChange={(event) => setSlug(slugify(event.target.value))} required /><span className="mt-2 block text-xs text-[var(--muted-foreground)]">Será usado internamente para identificar seu workspace.</span></label>
             <label className="block"><span className="mb-2 block text-sm font-medium">Seu nome</span><span className="relative block"><UserRound className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-[var(--muted-foreground)]" /><input className="h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--background)] pl-11 pr-4 text-sm focus:border-[var(--brand)] focus:bg-[var(--surface)] focus:outline-none" placeholder="Ana Ribeiro" value={displayName} onChange={(event) => setDisplayName(event.target.value)} required /></span></label>
             {error ? <p className="rounded-xl border border-[color-mix(in_srgb,var(--danger)_25%,transparent)] bg-[color-mix(in_srgb,var(--danger)_8%,transparent)] px-4 py-3 text-sm leading-5 text-[var(--danger)]">{error}</p> : null}
-            <button className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[var(--brand)] px-4 text-sm font-semibold text-white transition hover:bg-[var(--brand-hover)] disabled:cursor-not-allowed disabled:opacity-60" disabled={isLoading} type="submit">{isLoading ? "Criando clínica..." : "Criar workspace"}{!isLoading ? <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" /> : null}</button>
+            <button className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[var(--brand)] px-4 text-sm font-semibold text-white transition hover:bg-[var(--brand-hover)] disabled:cursor-not-allowed disabled:opacity-60" disabled={isLoading} type="submit">{isLoading ? "Criando clínica..." : "Concluir configuração"}{!isLoading ? <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" /> : null}</button>
             <p className="flex items-center justify-center gap-2 pt-1 text-xs text-[var(--muted-foreground)]"><Check className="size-3.5 text-[var(--success)]" /> Você será definido como administrador</p>
           </form>
         </div>

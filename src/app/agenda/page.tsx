@@ -2,8 +2,8 @@
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, CalendarDays, Check, CheckCircle2, Clock3, FileText, Play, Plus, UserRound, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { CalendarDays, Check, CheckCircle2, Clock3, FileText, Play, Plus, UserRound, X } from "lucide-react";
+
 
 type Appointment = { id: string; startsAt: string; endsAt: string; status: string; operationalNote: string | null; patientId: string; patientName: string; serviceId: string; serviceName: string; durationMinutes: number };
 type Patient = { id: string; display_name: string };
@@ -24,7 +24,7 @@ function dayLabel(value: string) { return new Intl.DateTimeFormat("pt-BR", { wee
 function statusLabel(status: string) { return ({ SCHEDULED: "Agendado", CONFIRMED: "Confirmado", CHECKED_IN: "Em espera", IN_PROGRESS: "Em atendimento", COMPLETED: "Concluído", NO_SHOW: "Faltou", CANCELLED: "Cancelado" } as Record<string, string>)[status] ?? status; }
 
 export default function AgendaPage() {
-  const router = useRouter();
+
   const [selectedDate, setSelectedDate] = useState(localDateValue);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -137,7 +137,6 @@ export default function AgendaPage() {
   return (
     <main className="min-h-screen bg-background px-5 py-8 sm:px-8 lg:px-12 lg:py-12">
       <div className="mx-auto max-w-7xl">
-        <button className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground" onClick={() => router.push("/patients")}><ArrowLeft size={16} />Ver pacientes</button>
         <header className="flex flex-col gap-5 border-b border-border pb-8 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-sm font-medium text-brand">Operação</p><h1 className="mt-2 text-4xl font-medium tracking-[-0.05em] sm:text-5xl">Agenda</h1><p className="mt-3 text-base leading-7 text-muted-foreground">Organize horários, pacientes e próximos atendimentos.</p></div><button className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-brand px-5 text-sm font-medium text-white shadow-sm transition hover:bg-brand-hover" onClick={openModal}><Plus size={18} />Novo agendamento</button></header>
         <section className="mt-8 flex flex-col gap-4 rounded-3xl border border-border bg-surface p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-6"><div><p className="text-sm text-muted-foreground">Visualizando</p><h2 className="mt-1 text-lg font-medium capitalize">{dayLabel(selectedDate)}</h2></div><label className="inline-flex h-11 items-center gap-2 rounded-xl border border-border bg-background px-3.5 text-sm"><CalendarDays size={16} className="text-muted-foreground" /><input type="date" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} /></label></section>
         {error ? <div className="mt-5 rounded-2xl border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">{error}</div> : null}

@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4f4f3;
-  --foreground: #171716;
+  --background: #eff6fd;
+  --foreground: #14284b;
   --surface: #ffffff;
-  --surface-muted: #ececea;
-  --muted-foreground: #6a6a67;
-  --border: #e0e0dd;
-  --brand: #fe6731;
+  --surface-muted: #f1f7fd;
+  --muted-foreground: #60728c;
+  --border: #e0eaf5;
+  --brand: #1765df;
   --brand-hover: color-mix(in srgb, var(--brand) 86%, black);
   --brand-soft: color-mix(in srgb, var(--brand) 12%, var(--surface));
   --brand-foreground: #ffffff;
-  --success: #18794e;
+  --success: #087f74;
   --warning: #a76000;
   --danger: #bf2c2c;
 }
@@ -50,20 +50,91 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 
 ::selection { background: var(--brand-soft); color: var(--foreground); }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #171716;
-    --foreground: #f6f6f2;
-    --surface: #222220;
-    --surface-muted: #2b2b28;
-    --muted-foreground: #aaa9a2;
-    --border: #393936;
-    --brand-soft: color-mix(in srgb, var(--brand) 18%, var(--surface));
-    --success: #66d19e;
-    --warning: #ffb65e;
-    --danger: #ff8d8d;
-  }
+:root { color-scheme: light; }
+
+.clinical-app { min-height: 100vh; background: radial-gradient(ellipse at 90% 0%, #e0efff, transparent 65%), var(--background); }
+.clinical-sidebar { position: fixed; inset: 0 auto 0 0; width: 252px; background: #ffffffed; border-right: 1px solid var(--border); padding: 32px 20px 20px; display: flex; flex-direction: column; z-index: 40; }
+.clinical-logo { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 650; letter-spacing: -.5px; }
+.clinical-logo small { display: block; color: var(--muted-foreground); font-size: 10px; font-weight: 400; letter-spacing: 0; margin-top: 4px; }
+.logo-symbol { display: grid; place-items: center; width: 40px; height: 42px; color: white; background: linear-gradient(145deg,#59a1ff,#0963df); border-radius: 14px 14px 18px 14px; box-shadow: 0 5px 15px #277cec25; }
+.nav-caption { font-size: 10px; font-weight: 600; color: #7889a0; letter-spacing: 1.5px; margin: 52px 14px 16px; }
+.clinical-sidebar nav { display: grid; gap: 8px; }
+.clinical-sidebar nav a { display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: 12px; font-size: 13px; color: var(--muted-foreground); }
+.clinical-sidebar nav a:hover { background: var(--surface-muted); }
+.clinical-sidebar nav a.active { color: var(--brand); background: linear-gradient(90deg,#e3f1ff,#eff7ff); font-weight: 600; }
+.nav-dot { margin-left: auto; width: 6px; height: 6px; border-radius: 50%; background: var(--brand); }
+.sidebar-care { margin-top: auto; padding: 24px 18px; background: radial-gradient(ellipse at top right,#c8e1ff,transparent),#edf6ff; border-radius: 18px; }
+.sidebar-care > svg { color: var(--brand); margin-bottom: 20px; }
+.sidebar-care h2 { font-size: 19px; line-height: 1.25; font-weight: 600; letter-spacing: -.5px; }
+.sidebar-care p { font-size: 12px; line-height: 1.7; margin-top: 12px; color: var(--muted-foreground); }
+.sidebar-care a { display: flex; align-items: center; gap: 7px; margin-top: 18px; font-size: 12px; color: var(--brand); font-weight: 600; }
+.sidebar-clinic { display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--border); margin-top: 24px; padding-top: 20px; font-size: 12px; }
+.sidebar-clinic > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.sidebar-clinic small,.account-name small { display: block; font-size: 10px; color: var(--muted-foreground); margin-top: 3px; }
+.clinic-avatar,.account-avatar { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 12px; color: var(--brand); background: var(--brand-soft); flex-shrink: 0; }
+.clinical-workspace { margin-left: 252px; }
+.clinical-topbar { height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 32px; background: #ffffffdf; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; backdrop-filter: blur(16px); }
+.topbar-context { display: flex; gap: 12px; align-items: center; font-size: 12px; color: var(--muted-foreground); }
+.topbar-context strong { color: var(--foreground); font-weight: 500; }
+.breadcrumb-divider { margin: 0 14px; color: #a3b5cc; }
+.account-area { display: flex; align-items: center; gap: 12px; }
+.account-name { font-size: 12px; font-weight: 500; }
+.account-area button { padding: 12px; border-left: 1px solid var(--border); margin-left: 8px; color: var(--muted-foreground); }
+.clinical-content main { min-height: calc(100vh - 80px); background: transparent; padding: 32px; }
+.clinical-content main > div { max-width: 1440px; }
+.clinical-content h1 { font-size: clamp(27px,3vw,36px); letter-spacing: -1.2px; line-height: 1.2; }
+.clinical-content main header { border: 0; padding-bottom: 12px; }
+.clinical-content main header p { font-size: 13px; line-height: 1.7; }
+.clinical-content .rounded-3xl { border-radius: 18px; }
+.clinical-content .shadow-sm { box-shadow: 0 4px 22px #3475b906; }
+.clinical-content button { cursor: pointer; }
+.clinical-content button:disabled { cursor: not-allowed; }
+.clinical-content input,.clinical-content select,.clinical-content textarea { border-radius: 10px; }
+.mobile-menu,.mobile-close { display: none; }
+.skip-link { position: fixed; top: -80px; left: 16px; z-index: 100; padding: 12px; background: white; }
+.skip-link:focus { top: 12px; }
+.auth-page { min-height: 100vh; display: grid; align-items: center; padding: 32px; background: radial-gradient(ellipse at top left,#d6eaff,transparent 65%),#eff6fd; }
+.auth-frame { display: grid; grid-template-columns: 1fr 1fr; width: 100%; max-width: 1160px; margin: auto; overflow: hidden; border: 1px solid #fff; border-radius: 28px; background: white; box-shadow: 0 20px 80px #285d9420; }
+.auth-visual { padding: 42px; display: flex; flex-direction: column; justify-content: space-between; background: radial-gradient(ellipse at bottom right,#d7eaff,transparent 70%),#f2f8ff; }
+.auth-story { margin: 60px 0 35px; }
+.auth-eyebrow { color: var(--brand); font-size: 10px; letter-spacing: 2px; font-weight: 650; }
+.auth-story h2 { margin-top: 20px; font-size: clamp(30px,3vw,40px); line-height: 1.2; letter-spacing: -1.5px; font-weight: 600; }
+.auth-story h2 em { font-style: normal; color: var(--brand); }
+.auth-story > p { max-width: 340px; margin-top: 20px; font-size: 14px; line-height: 1.8; color: var(--muted-foreground); }
+.care-art { position: relative; height: 230px; margin: 20px 0; display: grid; place-items: center; }
+.care-orbit { width: 220px; height: 190px; border: 1px solid #c5dffc; border-radius: 50%; transform: rotate(-25deg); background: #e2f0ff70; box-shadow: 0 0 0 25px #e5f2ff50; }
+.care-heart { position: absolute; top: 40px; left: 40%; width: 125px; height: 125px; display: grid; place-items: center; background: linear-gradient(145deg,#74b6ff,#1765df); color: white; border-radius: 35px; transform: rotate(-10deg); box-shadow: 10px 20px 30px #4784ca25; }
+.care-stethoscope { position: absolute; left: 18%; top: 75px; color: #3b77c5; transform: rotate(15deg); }
+.care-float { position: absolute; right: 5%; bottom: 13px; display: flex; gap: 8px; align-items: center; border: 1px solid white; border-radius: 12px; background: #ffffffdf; padding: 13px 16px; box-shadow: 0 8px 24px #4a7aab10; font-size: 11px; color: var(--brand); }
+.auth-features { display: flex; flex-wrap: wrap; gap: 20px; font-size: 11px; color: #405f86; }
+.auth-features span { display: flex; align-items: center; gap: 8px; }
+.auth-features svg { color: var(--brand); }
+.auth-footnote { font-size: 11px; color: var(--muted-foreground); }
+.auth-frame > section:last-child { padding: 42px; }
+.public-experience h1 { color: var(--foreground); }
+.public-experience input { border-radius: 10px; }
+.public-experience button[type=submit] { box-shadow: 0 5px 14px #1765df18; }
+@media(max-width:1023px) {
+  .clinical-sidebar { transform: translateX(-100%); visibility: hidden; transition: transform .2s; }
+  .clinical-sidebar.is-open { transform: translateX(0); visibility: visible; }
+  .clinical-workspace { margin-left: 0; }
+  .mobile-menu,.mobile-close { display: block; padding: 10px; }
+  .mobile-close { position: absolute; top: 85px; right: 12px; }
+  .sidebar-backdrop { position: fixed; inset: 0; background: #14284b50; z-index: 30; }
+  .auth-frame { grid-template-columns: 1fr; max-width: 560px; }
+  .auth-visual { display: none; }
 }
+@media(max-width:640px) {
+  .clinical-topbar { padding: 0 14px; height: 68px; }
+  .clinical-content main { padding: 22px 16px; }
+  .account-name,.account-avatar { display: none; }
+  .topbar-context { font-size: 11px; }
+  .breadcrumb-divider { margin: 0 6px; }
+  .auth-page { padding: 16px; }
+  .auth-frame { border-radius: 20px; }
+  .auth-frame > section:last-child { padding: 28px 22px; }
+}
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
 
 .app-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
 .app-scrollbar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }

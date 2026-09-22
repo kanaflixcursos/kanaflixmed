@@ -1,7 +1,9 @@
 "use client";
 
+import { AuthVisual } from "@/components/auth-visual";
+
 import { FormEvent, useState } from "react";
-import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, ShieldCheck, UserRound } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -73,18 +75,13 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--background)] p-4 sm:p-6 lg:p-8">
-      <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-6xl overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[var(--surface)] shadow-[0_24px_80px_rgba(23,23,22,0.08)] sm:min-h-[calc(100vh-3rem)] lg:grid-cols-[1.05fr_0.95fr]">
-        <section className="relative hidden overflow-hidden bg-[#171716] p-10 text-white lg:flex lg:flex-col lg:justify-between xl:p-14">
-          <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[var(--brand)]/20 blur-3xl" />
-          <div className="absolute -bottom-32 -left-24 h-80 w-80 rounded-full bg-[#4d7cff]/20 blur-3xl" />
-          <div className="relative"><div className="flex items-center gap-3"><span className="grid size-11 place-items-center rounded-2xl bg-[var(--brand)] text-lg font-semibold">KM</span><span className="text-lg font-semibold tracking-[-0.03em]">Kanaflix MED</span></div><p className="mt-24 max-w-md text-4xl font-medium leading-[1.05] tracking-[-0.06em] xl:text-5xl">Comece a cuidar da operação com mais leveza.</p><p className="mt-6 max-w-sm text-base leading-7 text-white/60">Crie seu acesso, configure sua clínica e organize sua rotina em poucos minutos.</p></div>
-          <div className="relative flex items-center gap-3 text-sm text-white/60"><ShieldCheck className="size-4 text-[var(--brand)]" />Ambiente protegido para sua equipe</div>
-        </section>
+    <main className="auth-page">
+      <div className="auth-frame">
+        <AuthVisual />
 
         <section className="flex items-center justify-center p-6 sm:p-10 lg:p-14"><div className="w-full max-w-md">
-          <div className="mb-10 lg:hidden"><div className="flex items-center gap-3"><span className="grid size-11 place-items-center rounded-2xl bg-[var(--brand)] text-lg font-semibold text-white">KM</span><span className="text-lg font-semibold tracking-[-0.03em]">Kanaflix MED</span></div></div>
-          <div><p className="text-sm font-medium text-[var(--brand)]">Conta da clínica</p><h1 className="mt-3 text-3xl font-semibold tracking-[-0.05em] sm:text-4xl">Crie sua conta</h1><p className="mt-3 text-sm leading-6 text-[var(--muted-foreground)]">Depois do cadastro, você configura o workspace da sua clínica.</p></div>
+          <div className="mb-10 lg:hidden"><div className="flex items-center gap-3"><span className="grid size-11 place-items-center rounded-2xl bg-[var(--brand)] text-lg font-semibold text-white">CC</span><span className="text-lg font-semibold tracking-[-0.03em]">Central Clínica</span></div></div>
+          <div><p className="text-sm font-medium text-[var(--brand)]">Conta da clínica</p><h1 className="mt-3 text-3xl font-semibold tracking-[-0.05em] sm:text-4xl">Crie sua conta</h1><p className="mt-3 text-sm leading-6 text-[var(--muted-foreground)]">Depois do cadastro, você configura o ambiente da sua clínica.</p></div>
 
           <button className="mt-9 flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-sm font-semibold transition hover:bg-[var(--surface-muted)] disabled:cursor-not-allowed disabled:opacity-60" disabled={isLoading} type="button" onClick={handleGoogleSignup}><span className="grid size-5 place-items-center rounded-full text-base font-bold">G</span>Continuar com Google</button>
           <div className="my-6 flex items-center gap-3 text-xs text-[var(--muted-foreground)]"><span className="h-px flex-1 bg-[var(--border)]" /><span>ou crie com e-mail</span><span className="h-px flex-1 bg-[var(--border)]" /></div>
