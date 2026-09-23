@@ -61,6 +61,16 @@ A home `/` continua levando sempre a `/login`. Não há link separado “Primeir
 
 Manter labels, foco visível de 3px, contraste de texto e nomes acessíveis nos botões de ícone. Link para pular ao conteúdo. Reflow de cards e formulários em telas pequenas. Erros devem ser legíveis; estados de carregamento não podem simular dados. Respeitar prefers-reduced-motion. Não adicionar IA, clima, prontuário ou gráficos sem funcionalidade e dados próprios.
 
+## Plano de movimento e feedback
+
+Movimento deve confirmar ações e orientar a atenção, sem atrapalhar leitura clínica ou retardar tarefas frequentes. Priorizar:
+
+1. **Feedback de ação:** botão responde ao clique, entra em estado de processamento e mostra resultado por mensagem breve e acessível; erros mantêm campos e dados digitados. Cadastro rápido de paciente seleciona automaticamente o novo registro no formulário de origem.
+2. **Mudanças de contexto:** modais e menus entram com leve fade e deslocamento; mudanças entre dia/semana/mês na agenda preservam a orientação espacial. Não animar números de pacientes, valores financeiros ou estados clínicos de modo que pareçam mudar sem atualização real.
+3. **Hierarquia interativa:** hover/foco discretos em cards clicáveis, linhas da agenda e itens de timeline; seleção e confirmação têm destaque visual temporário, sempre com texto de status.
+
+Usar duração de 120–220 ms na maioria das microinterações, até 280 ms para sobreposições; evitar sequências decorativas, bounce e transições de página longas. Em `prefers-reduced-motion`, eliminar deslocamento e escala, mantendo feedback por cor, texto e foco. Implementar em etapas: primeiro estados de salvar/erro/sucesso; depois modais e navegação; por fim transições da agenda e timeline. Testar com teclado, mobile e dados reais antes de ampliar a todas as telas.
+
 ## Marca e publicação
 
 Nome público: Central Clínica em todas as telas e metadados. Identificadores técnicos, repositório e domínio existentes permanecem por compatibilidade; mudança de domínio ou nome do provedor OAuth é uma etapa de infraestrutura separada. A documentação histórica mantém contexto dos nomes anteriores.

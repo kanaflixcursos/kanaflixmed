@@ -68,7 +68,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .sidebar-care h2 { font-size: 19px; line-height: 1.25; font-weight: 600; letter-spacing: -.5px; }
 .sidebar-care p { font-size: 12px; line-height: 1.7; margin-top: 12px; color: var(--muted-foreground); }
 .sidebar-care a { display: flex; align-items: center; gap: 7px; margin-top: 18px; font-size: 12px; color: var(--brand); font-weight: 600; }
-.sidebar-clinic { display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--border); margin-top: 24px; padding-top: 20px; font-size: 12px; }
+.sidebar-clinic { display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--border); margin-top: 24px; padding: 12px 8px; min-height: 61px; font-size: 12px; }
 .sidebar-clinic > span:last-child { min-width: 0; overflow-wrap: anywhere; }
 .sidebar-clinic small,.account-name small { display: block; font-size: 10px; color: var(--muted-foreground); margin-top: 3px; }
 .clinic-avatar,.account-avatar { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 12px; color: var(--brand); background: var(--brand-soft); flex-shrink: 0; }
@@ -89,7 +89,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .account-menu-panel a:hover,.account-menu-panel button:hover { background: var(--surface-muted); }
 .account-menu-panel button { color: var(--danger); }
 .account-menu-panel p { padding: 8px 10px; color: var(--danger); font-size: 11px; }
-.sidebar-clinic[href] { text-decoration: none; color: var(--foreground); border-radius: 12px; padding-left: 8px; padding-right: 8px; transition: background .15s; }
+.sidebar-clinic[href] { text-decoration: none; color: var(--foreground); border-radius: 12px; transition: background .15s; }
 .sidebar-clinic[href]:hover { background: var(--surface-muted); }
 .clinical-content main { min-height: calc(100vh - 80px); background: transparent; padding: 32px; }
 .clinical-content main > div { max-width: 1440px; }
@@ -101,6 +101,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .clinical-content button { cursor: pointer; }
 .clinical-content button:disabled { cursor: not-allowed; }
 .clinical-content input,.clinical-content select,.clinical-content textarea { border-radius: 10px; }
+.clinical-content select:not([multiple]) { appearance: none; padding-right: 2.75rem; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2360728c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-position: right 0.875rem center; background-size: 1rem; background-repeat: no-repeat; }
 .mobile-menu,.mobile-close { display: none; }
 .skip-link { position: fixed; top: -80px; left: 16px; z-index: 100; padding: 12px; background: white; }
 .skip-link:focus { top: 12px; }
