@@ -20,20 +20,68 @@ export default function OnboardingPage() {
   const [slug, setSlug] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingMembership, setIsCheckingMembership] = useState(true);
+  const [membershipCheckFailed, setMembershipCheckFailed] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
-    createClient().auth.getUser().then(({ data }) => {
-      if (isMounted && data.user?.user_metadata?.full_name && !displayName) {
-        setDisplayName(data.user.user_metadata.full_name);
+    async function checkMembership() {
+      try {
+        const supabase = createClient();
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        if (!isMounted) return;
+
+        if (userError) {
+          setMembershipCheckFailed(true);
+          setError("Não foi possível validar sua sessão. Atualize a página antes de continuar.");
+          setIsCheckingMembership(false);
+          return;
+        }
+
+        if (!user) {
+          router.replace("/login");
+          return;
+        }
+
+        const { data: memberships, error: membershipError } = await supabase
+          .from("memberships")
+          .select("organization_id")
+          .eq("user_id", user.id)
+          .eq("status", "ACTIVE")
+          .limit(1);
+
+        if (!isMounted) return;
+        if (membershipError) {
+          setMembershipCheckFailed(true);
+          setError("Não foi possível verificar se sua conta já tem uma clínica. Atualize a página antes de continuar.");
+          setIsCheckingMembership(false);
+          return;
+        }
+
+        if (memberships?.length) {
+          router.replace("/agenda");
+          router.refresh();
+          return;
+        }
+
+        if (user.user_metadata?.full_name) setDisplayName((current) => current || user.user_metadata.full_name);
+        setIsCheckingMembership(false);
+      } catch {
+        if (!isMounted) return;
+        setMembershipCheckFailed(true);
+        setError("Não foi possível verificar sua conta. Atualize a página antes de continuar.");
+        setIsCheckingMembership(false);
       }
-    });
+    }
+
+    void checkMembership();
     return () => { isMounted = false; };
-  }, [displayName]);
+  }, [router]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isCheckingMembership || membershipCheckFailed) return;
     setError(null);
     setIsLoading(true);
 
@@ -84,7 +132,7 @@ export default function OnboardingPage() {
             <label className="block"><span className="mb-2 block text-sm font-medium">Identificador da clínica</span><input className="h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-4 text-sm focus:border-[var(--brand)] focus:bg-[var(--surface)] focus:outline-none" placeholder="clinica-movimento" value={slug} onChange={(event) => setSlug(slugify(event.target.value))} required /><span className="mt-2 block text-xs text-[var(--muted-foreground)]">Será usado internamente para identificar seu workspace.</span></label>
             <label className="block"><span className="mb-2 block text-sm font-medium">Seu nome</span><span className="relative block"><UserRound className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-[var(--muted-foreground)]" /><input className="h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--background)] pl-11 pr-4 text-sm focus:border-[var(--brand)] focus:bg-[var(--surface)] focus:outline-none" placeholder="Ana Ribeiro" value={displayName} onChange={(event) => setDisplayName(event.target.value)} required /></span></label>
             {error ? <p className="rounded-xl border border-[color-mix(in_srgb,var(--danger)_25%,transparent)] bg-[color-mix(in_srgb,var(--danger)_8%,transparent)] px-4 py-3 text-sm leading-5 text-[var(--danger)]">{error}</p> : null}
-            <button className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[var(--brand)] px-4 text-sm font-semibold text-white transition hover:bg-[var(--brand-hover)] disabled:cursor-not-allowed disabled:opacity-60" disabled={isLoading} type="submit">{isLoading ? "Criando clínica..." : "Concluir configuração"}{!isLoading ? <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" /> : null}</button>
+            <button className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[var(--brand)] px-4 text-sm font-semibold text-white transition hover:bg-[var(--brand-hover)] disabled:cursor-not-allowed disabled:opacity-60" disabled={isLoading || isCheckingMembership || membershipCheckFailed} type="submit">{isCheckingMembership ? "Verificando sua clínica..." : isLoading ? "Criando clínica..." : "Concluir configuração"}{!isLoading && !isCheckingMembership ? <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" /> : null}</button>
             <p className="flex items-center justify-center gap-2 pt-1 text-xs text-[var(--muted-foreground)]"><Check className="size-3.5 text-[var(--success)]" /> Você será definido como administrador</p>
           </form>
         </div>
