@@ -72,7 +72,10 @@ export function AgendaCalendar({ initialDate, initialView }: { initialDate?: str
   }, [selectedDate, view]);
 
   const visibleDays = view === "day" ? [{ date: selectedDate, label: dateTitle(selectedDate, timezone, { weekday: "short", day: "numeric" }) }] : dayNames(range.start, timezone);
-  const monthDays = view === "month" ? visibleDays : [];
+  const monthDays = view === "month" ? Array.from({ length: 42 }, (_, index) => {
+    const date = addDays(range.start, index);
+    return { date, label: dateTitle(date, timezone, { weekday: "short", day: "numeric" }) };
+  }) : [];
   const appointmentsByDay = useMemo(() => appointments.reduce<Record<string, Appointment[]>>((groups, appointment) => {
     const date = new Intl.DateTimeFormat("en-CA", { timeZone: timezone, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(appointment.startsAt));
     (groups[date] ??= []).push(appointment);

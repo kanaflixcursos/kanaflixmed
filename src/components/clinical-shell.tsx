@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CalendarDays, UsersRound, WalletCards, HeartPulse, LogOut, Menu, X, ArrowUpRight, Stethoscope, LayoutDashboard, UserRound, Settings, ChevronDown } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -21,6 +21,22 @@ export function ClinicalShell({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState({ name: "Sua conta", clinic: "Sua clínica", role: "" });
   const [signingOut, setSigningOut] = useState(false);
   const [error, setError] = useState("");
+  const accountMenuRef = useRef<HTMLDetailsElement>(null);
+
+  useEffect(() => {
+    function closeOutside(event: PointerEvent) {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(event.target as Node)) accountMenuRef.current.open = false;
+    }
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape" && accountMenuRef.current?.open) {
+        accountMenuRef.current.open = false;
+        accountMenuRef.current.querySelector("summary")?.focus();
+      }
+    }
+    document.addEventListener("pointerdown", closeOutside);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => { document.removeEventListener("pointerdown", closeOutside); document.removeEventListener("keydown", closeOnEscape); };
+  }, []);
 
   useEffect(() => {
     if (!internal) return;
@@ -36,7 +52,7 @@ export function ClinicalShell({ children }: { children: React.ReactNode }) {
     }
     void load().catch(() => undefined);
     window.addEventListener("clinic-profile-updated", load);
-    return () => { cancelled = true; };
+    return () => { cancelled = true; window.removeEventListener("clinic-profile-updated", load); };
   }, [internal]);
 
   if (!internal) return <div className="public-experience">{children}</div>;
@@ -67,7 +83,7 @@ export function ClinicalShell({ children }: { children: React.ReactNode }) {
       {profile.role === "ADMIN" ? <Link href="/configuracoes/clinica" className="sidebar-clinic"><span className="clinic-avatar"><HeartPulse size={19} /></span><span>{profile.clinic}<small>Perfil da clínica</small></span><Settings className="ml-auto" size={15} /></Link> : <div className="sidebar-clinic"><span className="clinic-avatar"><HeartPulse size={19} /></span><span>{profile.clinic}<small>Ambiente da equipe</small></span></div>}
     </aside>
     <div className="clinical-workspace">
-      <header className="clinical-topbar"><div className="topbar-context"><button className="mobile-menu" onClick={() => setOpen(true)} aria-expanded={open} aria-label="Abrir menu"><Menu size={22} /></button><span>Central Clínica <span className="breadcrumb-divider">/</span> <strong>{current?.label}</strong></span></div><details className="account-menu"><summary className="account-area"><span className="account-avatar">{profile.name.slice(0, 1).toUpperCase()}</span><span className="account-name">{profile.name}<small>Área profissional</small></span><ChevronDown size={16} className="account-chevron" /></summary><div className="account-menu-panel"><Link href="/perfil"><UserRound size={16} />Meu perfil</Link>{profile.role === "ADMIN" ? <Link href="/configuracoes/clinica"><Settings size={16} />Perfil da clínica</Link> : null}<button disabled={signingOut} onClick={() => void signOut()}><LogOut size={16} />{signingOut ? "Saindo…" : "Sair da conta"}</button>{error ? <p role="alert">{error}</p> : null}</div></details></header>
+      <header className="clinical-topbar"><div className="topbar-context"><button className="mobile-menu" onClick={() => setOpen(true)} aria-expanded={open} aria-label="Abrir menu"><Menu size={22} /></button><span>Central Clínica <span className="breadcrumb-divider">/</span> <strong>{current?.label}</strong></span></div><details ref={accountMenuRef} className="account-menu"><summary className="account-area"><span className="account-avatar">{profile.name.slice(0, 1).toUpperCase()}</span><span className="account-name">{profile.name}<small>Área profissional</small></span><ChevronDown size={16} className="account-chevron" /></summary><div className="account-menu-panel"><Link href="/perfil" onClick={() => { if (accountMenuRef.current) accountMenuRef.current.open = false; }}><UserRound size={16} />Meu perfil</Link>{profile.role === "ADMIN" ? <Link href="/configuracoes/clinica" onClick={() => { if (accountMenuRef.current) accountMenuRef.current.open = false; }}><Settings size={16} />Perfil da clínica</Link> : null}<button disabled={signingOut} onClick={() => void signOut()}><LogOut size={16} />{signingOut ? "Saindo…" : "Sair da conta"}</button>{error ? <p role="alert">{error}</p> : null}</div></details></header>
       {error && <p role="alert" className="mx-6 mt-4 text-sm text-danger">{error}</p>}
       <div id="clinical-content" className="clinical-content">{children}</div>
     </div>
