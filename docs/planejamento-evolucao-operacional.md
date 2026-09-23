@@ -5,9 +5,10 @@
 - **Implementado no checkout:** dashboard e agregações, calendário por período, detalhe e remarcação transacional, criação de agendamento em página própria, prontuário mínimo, timeline paginada e edição de perfil profissional/clínica. O fluxo pós-login agora aponta para `/dashboard`.
 - **Verificações locais:** `pnpm exec tsc --noEmit`, `pnpm lint` e `pnpm build` passaram.
 - **Supabase de produção:** migração aplicada. Como o projeto já tinha a estrutura-base, mas não tinha histórico de migrações, os cinco marcos existentes foram reconciliados como aplicados sem reaplicar seus SQLs. A prévia seguinte mostrou somente a nova migração; confirmei tabela de remarcações, restrição de sobreposição, RPCs, grants e histórico remoto.
-- **Próxima etapa de liberação:** publicar o frontend compatível e testar login, agendamento, prontuário e dashboard em produção. O deploy deve acompanhar esta migração, pois as telas novas dependem das RPCs criadas.
+- **Vercel de produção:** commit `f05391e` enviado para `main`; check da Vercel concluiu com sucesso. Validei `/login` com HTTP 200 e nome Central Clínica; `/api/dashboard` sem sessão retorna 401 `AUTH_REQUIRED`, como esperado.
+- **Aceite autenticado ainda recomendado:** entrar com a conta clínica e conferir dashboard, criação/remarcação de consulta, prontuário e edição de perfil com os dados reais da clínica. O build e a implantação não substituem esse teste funcional autenticado.
 
-Estado: planejamento para a próxima implementação. Base examinada: `main` em `4b56b3e` (23/09/2026). Este documento descreve o produto desejado, não recursos já publicados.
+Estado: implementação publicada em `main` no commit `f05391e` (23/09/2026). A base examinada antes do trabalho era `4b56b3e`; a seção acima registra a migração, deploy e verificações realizadas.
 
 ## Objetivo e limite
 
