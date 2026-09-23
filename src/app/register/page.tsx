@@ -66,7 +66,7 @@ export default function RegisterPage() {
     setIsLoading(true);
     const { error: authError } = await createClient().auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback?next=/onboarding` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=/auth/post-login` },
     });
     if (authError) {
       setError(authError.message);

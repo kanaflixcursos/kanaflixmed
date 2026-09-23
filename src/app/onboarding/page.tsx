@@ -48,6 +48,7 @@ export default function OnboardingPage() {
         AUTH_REQUIRED: "Entre na sua conta antes de configurar a clínica.",
         INVALID_ORGANIZATION_NAME: "Informe um nome de clínica entre 2 e 120 caracteres.",
         INVALID_ORGANIZATION_SLUG: "Use um identificador com letras minúsculas, números e hífens.",
+        ORGANIZATION_SLUG_TAKEN: "Este identificador já está em uso. Escolha outro para continuar.",
         INVALID_MEMBER_NAME: "Informe seu nome completo.",
       };
       setError(messages[rpcError.message] ?? "Não foi possível criar a clínica. Verifique os dados e tente novamente.");
