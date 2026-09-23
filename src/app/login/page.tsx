@@ -23,7 +23,7 @@ async function getPostAuthPath() {
     .limit(1);
 
   if (error) throw error;
-  return memberships?.length ? "/agenda" : "/onboarding";
+  return memberships?.length ? "/dashboard" : "/onboarding";
 }
 
 export default function LoginPage() {

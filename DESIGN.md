@@ -25,7 +25,7 @@ Tema claro deliberado, independente da preferência do sistema. Azul suave e gra
 
 ## Estrutura
 
-- Sidebar desktop fixa de 252px, branca translúcida, borda direita suave; logo no topo, seção de gestão e navegação com altura confortável. Item ativo azul sobre fundo azul-claro. Navegação implementada: Agenda, Pacientes e Financeiro.
+- Sidebar desktop fixa de 252px, branca translúcida, borda direita suave; logo no topo, seção de gestão e navegação com altura confortável. Item ativo azul sobre fundo azul-claro. Navegação: Dashboard, Agenda, Pacientes e Financeiro.
 - Rodapé lateral com nome real da clínica e mensagem de cuidado. Não inventar dados de profissionais, unidades ou pacientes.
 - Topbar de 80px, com contexto da página, usuário real e ação de sair. No mobile, 68px e botão para abrir navegação. Não exibir notificações, busca global ou controles sem implementação.
 - Área de trabalho com 32px de respiro no desktop e 16px lateral no mobile. Conteúdo máximo de 1440px. Título de 27–36px com descrição curta e ação primária por página.
@@ -45,14 +45,17 @@ Cards operacionais: raio 18px, borda de 1px e sombra `0 4px 22px #3475b906`. Agr
 
 Login e cadastro têm moldura branca com raio 28px sobre fundo azul-gelo, máximo de 1160px. Desktop em duas colunas: acolhimento visual à esquerda, formulário à direita. Painel visual com marca, mensagem clínica, pulso e estetoscópio; sem métricas simuladas. Mobile mostra formulário em uma coluna, marca e campos confortáveis.
 
-A home `/` continua levando sempre a `/login`. Não há link separado “Primeiro acesso” no login. Autenticação leva à configuração quando não existe clínica; caso contrário à agenda. Cadastro e configuração são etapas do mesmo acesso profissional. A configuração usa o vocabulário “clínica” e “ambiente”, evitando jargão técnico.
+A home `/` continua levando sempre a `/login`. Não há link separado “Primeiro acesso” no login. Autenticação leva à configuração quando não existe clínica; caso contrário ao dashboard. Cadastro e configuração são etapas do mesmo acesso profissional. A configuração usa o vocabulário “clínica” e “ambiente”, evitando jargão técnico.
 
 ## Telas operacionais
 
-- Agenda: título, ação de novo agendamento, filtro de dia e lista cronológica. Status e ações de atendimento continuam vinculados aos dados reais.
-- Pacientes: busca, cadastro, edição e estado vazio dentro da nova estrutura. Detalhe mantém informações de contato e histórico.
+- Dashboard: indicadores da clínica inteira por dia, semana e mês; próximos atendimentos e resumo financeiro só para os papéis autorizados. Consultas concluídas e prontuários encerrados têm métricas separadas.
+- Agenda: calendário por dia, semana e mês; estados usam texto e cor; seleção de horário abre página própria para novo agendamento. Conflitos de horário são verificados no servidor.
+- Pacientes: busca, cadastro, edição e estado vazio dentro da nova estrutura. Detalhe separa próximas consultas e histórico em timeline, com navegação para cada consulta.
+- Consulta e prontuário: detalhes operacionais e histórico de status/remarcação. O prontuário fica disponível ao profissional responsável; depois de encerrado passa à leitura.
+- Perfis: dados profissionais editáveis pelo próprio usuário; dados da clínica editáveis apenas por administrador.
 - Financeiro: cards de saldo e lista de cobranças; ação de recebimento com escolha de forma. A nova aparência não muda regras de cálculo.
-- Configuração inicial: formulário focado em nome da clínica e profissional com a mesma paleta azul, bordas e tipografia.
+- Configuração inicial: formulário focado em nome da clínica e profissional com a mesma paleta azul, bordas e tipografia. O acesso com clínica ativa abre o dashboard.
 
 ## Acessibilidade e comportamento
 

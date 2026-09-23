@@ -79,7 +79,18 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .breadcrumb-divider { margin: 0 14px; color: #a3b5cc; }
 .account-area { display: flex; align-items: center; gap: 12px; }
 .account-name { font-size: 12px; font-weight: 500; }
-.account-area button { padding: 12px; border-left: 1px solid var(--border); margin-left: 8px; color: var(--muted-foreground); }
+.account-menu { position: relative; }
+.account-menu summary { list-style: none; cursor: pointer; }
+.account-menu summary::-webkit-details-marker { display: none; }
+.account-chevron { color: var(--muted-foreground); transition: transform .15s; }
+.account-menu[open] .account-chevron { transform: rotate(180deg); }
+.account-menu-panel { position: absolute; top: calc(100% + 12px); right: 0; z-index: 50; width: 220px; padding: 7px; border: 1px solid var(--border); border-radius: 14px; background: white; box-shadow: 0 14px 36px #14284b18; }
+.account-menu-panel a,.account-menu-panel button { display: flex; width: 100%; align-items: center; gap: 10px; padding: 10px 11px; border-radius: 9px; color: var(--foreground); font-size: 12px; text-align: left; }
+.account-menu-panel a:hover,.account-menu-panel button:hover { background: var(--surface-muted); }
+.account-menu-panel button { color: var(--danger); }
+.account-menu-panel p { padding: 8px 10px; color: var(--danger); font-size: 11px; }
+.sidebar-clinic[href] { text-decoration: none; color: var(--foreground); border-radius: 12px; padding-left: 8px; padding-right: 8px; transition: background .15s; }
+.sidebar-clinic[href]:hover { background: var(--surface-muted); }
 .clinical-content main { min-height: calc(100vh - 80px); background: transparent; padding: 32px; }
 .clinical-content main > div { max-width: 1440px; }
 .clinical-content h1 { font-size: clamp(27px,3vw,36px); letter-spacing: -1.2px; line-height: 1.2; }

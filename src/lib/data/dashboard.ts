@@ -4,6 +4,7 @@ export type DashboardContext = {
   userId: string;
   organizationId: string;
   organizationName: string;
+  timezone: string;
   role: string;
 };
 
@@ -27,10 +28,11 @@ export async function getDashboardContext(): Promise<DashboardContext | null> {
 
   const { data: membership } = await supabase
     .from("memberships")
-    .select("organization_id, role, organizations(name)")
+    .select("organization_id, role, organizations(name, timezone)")
     .eq("user_id", user.id)
     .eq("status", "ACTIVE")
     .order("created_at", { ascending: true })
+    .limit(1)
     .maybeSingle();
 
   if (!membership) return null;
@@ -41,6 +43,7 @@ export async function getDashboardContext(): Promise<DashboardContext | null> {
     userId: user.id,
     organizationId: membership.organization_id,
     organizationName: organization?.name ?? "Clínica sem nome",
+    timezone: (organization as { timezone?: string } | null)?.timezone ?? "America/Sao_Paulo",
     role: membership.role,
   };
 }

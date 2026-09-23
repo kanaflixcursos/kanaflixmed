@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
   const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
   if (exchangeError) return response;
 
-  let redirectPath = next?.startsWith("/") && next !== "/auth/post-login" ? next : "/agenda";
+  let redirectPath = next?.startsWith("/") && next !== "/auth/post-login" ? next : "/dashboard";
   if (next === "/auth/post-login") {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return response;
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
       return response;
     }
 
-    redirectPath = memberships?.length ? "/agenda" : "/onboarding";
+    redirectPath = memberships?.length ? "/dashboard" : "/onboarding";
   }
 
   response.headers.set("Location", new URL(redirectPath, request.url).toString());

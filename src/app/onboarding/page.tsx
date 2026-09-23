@@ -60,7 +60,7 @@ export default function OnboardingPage() {
         }
 
         if (memberships?.length) {
-          router.replace("/agenda");
+          router.replace("/dashboard");
           router.refresh();
           return;
         }
@@ -104,7 +104,7 @@ export default function OnboardingPage() {
       return;
     }
 
-    router.replace("/agenda");
+    router.replace("/dashboard");
     router.refresh();
   }
 
