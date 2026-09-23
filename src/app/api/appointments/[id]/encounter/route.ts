@@ -41,6 +41,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (!parsed.success) return NextResponse.json({ error: "INVALID_ENCOUNTER", details: parsed.error.flatten() }, { status: 400 });
   const { version, finalize, ...encounterData } = parsed.data;
   const supabase = await createClient();
+  const { data: appointment, error: appointmentError } = await supabase.from("appointments")
+    .select("status").eq("id", id).eq("organization_id", context.organizationId).maybeSingle();
+  if (appointmentError) return NextResponse.json({ error: "APPOINTMENT_LOAD_FAILED" }, { status: 500 });
+  if (!appointment) return NextResponse.json({ error: "APPOINTMENT_NOT_FOUND" }, { status: 404 });
+  if (!["CHECKED_IN", "IN_PROGRESS", "COMPLETED"].includes(appointment.status)) return NextResponse.json({ error: "APPOINTMENT_NOT_IN_CARE" }, { status: 409 });
   const { data, error } = await supabase.rpc("save_encounter_atomic", {
     target_appointment: id,
     expected_version: version,

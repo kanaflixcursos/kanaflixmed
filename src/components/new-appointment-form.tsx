@@ -12,14 +12,14 @@ type BusyTime = { startsAt: string; endsAt: string; professionalId: string; stat
 const currency = (cents: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(cents / 100);
 const humanDate = (date: string) => new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${date}T12:00:00Z`));
 
-export function NewAppointmentForm({ initialDate, initialTime, returnTo }: { initialDate: string; initialTime: string; returnTo: string }) {
+export function NewAppointmentForm({ initialDate, initialTime, returnTo, initialPatientId = "" }: { initialDate: string; initialTime: string; returnTo: string; initialPatientId?: string }) {
   const router = useRouter();
   const [patients, setPatients] = useState<PatientOption[]>([]);
   const [patientDialogOpen, setPatientDialogOpen] = useState(false);
   const [services, setServices] = useState<Service[]>([]);
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [timezone, setTimezone] = useState("America/Sao_Paulo");
-  const [patientId, setPatientId] = useState("");
+  const [patientId, setPatientId] = useState(initialPatientId);
   const [serviceId, setServiceId] = useState("");
   const [professionalId, setProfessionalId] = useState("");
   const [date, setDate] = useState(initialDate);
@@ -43,7 +43,17 @@ export function NewAppointmentForm({ initialDate, initialTime, returnTo }: { ini
         const [patientPayload, servicePayload, teamPayload, clinicPayload] = await Promise.all([patientResponse.json(), serviceResponse.json(), teamResponse.json(), clinicResponse.json()]);
         if (!patientResponse.ok || !serviceResponse.ok || !teamResponse.ok) throw new Error("Não foi possível carregar os dados necessários.");
         if (!active) return;
-        setPatients(patientPayload.patients ?? []);
+        const loadedPatients: PatientOption[] = patientPayload.patients ?? [];
+        if (initialPatientId && !loadedPatients.some((patient) => patient.id === initialPatientId)) {
+          const selectedResponse = await fetch(`/api/patients/${initialPatientId}`, { cache: "no-store" });
+          if (selectedResponse.ok) {
+            const selectedPayload = await selectedResponse.json();
+            if (selectedPayload.patient.active) loadedPatients.push({ id: selectedPayload.patient.id, display_name: selectedPayload.patient.display_name });
+            else setPatientId("");
+          } else setPatientId("");
+        }
+        if (!active) return;
+        setPatients(loadedPatients.sort((a, b) => a.display_name.localeCompare(b.display_name, "pt-BR")));
         setServices(servicePayload.services ?? []);
         setProfessionals(teamPayload.members ?? []);
         setTimezone(clinicPayload.clinic?.timezone ?? "America/Sao_Paulo");
@@ -54,7 +64,7 @@ export function NewAppointmentForm({ initialDate, initialTime, returnTo }: { ini
     }
     void load();
     return () => { active = false; };
-  }, []);
+  }, [initialPatientId]);
 
   useEffect(() => {
     if (!date || !professionalId) return;

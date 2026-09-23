@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { ArrowLeft, CalendarDays, Check, UserRound } from "lucide-react";
 
-type PatientForm = { displayName: string; legalName: string; birthDate: string; phone: string; email: string; notes: string };
-const emptyForm: PatientForm = { displayName: "", legalName: "", birthDate: "", phone: "", email: "", notes: "" };
+type PatientForm = { fullName: string; birthDate: string; phone: string; email: string; notes: string };
+const emptyForm: PatientForm = { fullName: "", birthDate: "", phone: "", email: "", notes: "" };
 
 export function PatientEditor({ patientId }: { patientId?: string }) {
   const router = useRouter();
@@ -24,7 +24,7 @@ export function PatientEditor({ patientId }: { patientId?: string }) {
         const response = await fetch(`/api/patients/${patientId}`, { cache: "no-store" });
         const payload = await response.json();
         if (!response.ok) throw new Error(payload.error === "PATIENT_NOT_FOUND" ? "Paciente não encontrado." : "Não foi possível carregar o cadastro.");
-        if (active) setForm({ displayName: payload.patient.display_name, legalName: payload.patient.legal_name ?? "", birthDate: payload.patient.birth_date ?? "", phone: payload.patient.phone_e164 ?? "", email: payload.patient.email ?? "", notes: payload.patient.notes ?? "" });
+        if (active) setForm({ fullName: payload.patient.legal_name || payload.patient.display_name, birthDate: payload.patient.birth_date ?? "", phone: payload.patient.phone_e164 ?? "", email: payload.patient.email ?? "", notes: payload.patient.notes ?? "" });
       } catch (loadError) { if (active) setError(loadError instanceof Error ? loadError.message : "Não foi possível carregar o cadastro."); }
       finally { if (active) setLoading(false); }
     }
@@ -51,8 +51,7 @@ export function PatientEditor({ patientId }: { patientId?: string }) {
     {loading ? <div className="mt-6 rounded-3xl border border-border bg-surface p-10 text-center text-sm text-muted-foreground">Carregando cadastro…</div> : <form onSubmit={submit} className="mt-6 rounded-3xl border border-border bg-surface p-5 shadow-sm sm:p-8">
       <div className="mb-6 flex items-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-brand-soft text-brand"><UserRound size={20} /></span><div><h2 className="font-medium">Dados do paciente</h2><p className="text-xs text-muted-foreground">Preencha o nome e os dados disponíveis.</p></div></div>
       <div className="grid gap-5 sm:grid-cols-2">
-        <label className="block"><span className="mb-2 block text-sm font-medium">Nome de exibição</span><input autoFocus required minLength={2} maxLength={120} value={form.displayName} onChange={(event) => setForm({ ...form, displayName: event.target.value })} className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm" placeholder="Nome do paciente" /></label>
-        <label className="block"><span className="mb-2 block text-sm font-medium">Nome completo / legal</span><input maxLength={160} value={form.legalName} onChange={(event) => setForm({ ...form, legalName: event.target.value })} className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm" placeholder="Nome completo do paciente" /></label>
+        <label className="block sm:col-span-2"><span className="mb-2 block text-sm font-medium">Nome completo</span><input autoFocus required minLength={2} maxLength={160} value={form.fullName} onChange={(event) => setForm({ ...form, fullName: event.target.value })} className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm" placeholder="Nome completo do paciente" /></label>
         <label className="block"><span className="mb-2 block text-sm font-medium">Data de nascimento</span><span className="relative block"><CalendarDays className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><input type="date" value={form.birthDate} onChange={(event) => setForm({ ...form, birthDate: event.target.value })} className="h-12 w-full rounded-xl border border-border bg-background pl-10 pr-4 text-sm" /></span></label>
         <label className="block"><span className="mb-2 block text-sm font-medium">Telefone</span><input type="tel" maxLength={30} value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm" placeholder="(11) 99999-0000" /></label>
         <label className="block sm:col-span-2"><span className="mb-2 block text-sm font-medium">E-mail</span><input type="email" maxLength={160} value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm" placeholder="paciente@email.com" /></label>

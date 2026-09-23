@@ -150,3 +150,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 
 .app-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
 .app-scrollbar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+@media print {
+  @page { size: A4; margin: 17mm; }
+  body:has(.print-prescription-page) { background: white; }
+  .clinical-app:has(.print-prescription-page) .clinical-sidebar,
+  .clinical-app:has(.print-prescription-page) .clinical-topbar,
+  .prescription-screen-actions { display: none !important; }
+  .clinical-app:has(.print-prescription-page) .clinical-workspace { margin-left: 0; }
+  .clinical-content .print-prescription-page { min-height: 0; padding: 0 !important; background: white; }
+  .prescription-paper { min-height: 0; border: 0; border-radius: 0; box-shadow: none; padding: 0; }
+}

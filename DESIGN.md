@@ -51,8 +51,9 @@ A home `/` continua levando sempre a `/login`. Não há link separado “Primeir
 
 - Dashboard: indicadores da clínica inteira por dia, semana e mês; próximos atendimentos e resumo financeiro só para os papéis autorizados. Consultas concluídas e prontuários encerrados têm métricas separadas.
 - Agenda: calendário por dia, semana e mês; estados usam texto e cor; seleção de horário abre página própria para novo agendamento. Conflitos de horário são verificados no servidor.
-- Pacientes: busca, cadastro, edição e estado vazio dentro da nova estrutura. Detalhe separa próximas consultas e histórico em timeline, com navegação para cada consulta.
-- Consulta e prontuário: detalhes operacionais e histórico de status/remarcação. O prontuário fica disponível ao profissional responsável; depois de encerrado passa à leitura.
+- Pacientes: busca, cadastro e edição em páginas próprias; apenas o cadastro rápido durante um agendamento usa diálogo. Um único campo de nome completo alimenta a identificação em todas as telas. Detalhe mostra dados, próximas consultas e histórico em boxes separados; observações administrativas têm compositor compacto e entram na timeline com autor e horário.
+- Consulta e prontuário: fluxo principal Pré-agendada → Confirmada → Em atendimento/check-in → Concluída, com retorno opcional após a conclusão. O prontuário abre durante o atendimento e apresenta dois grupos de campos por linha no desktop. Depois de encerrado, passa à leitura.
+- Anexos clínicos: PDF e DOCX de até 4 MB em bucket privado, com acesso por consulta ao profissional responsável e à administração; sem visualização embutida. Receita simples é rascunho persistido para impressão física, separado do prontuário e sem assinatura digital; impressão pede CRM, número e UF no perfil profissional. Receituários especiais e assinatura eletrônica não fazem parte desta entrega.
 - Perfis: dados profissionais editáveis pelo próprio usuário; dados da clínica editáveis apenas por administrador.
 - Financeiro: cards de saldo e lista de cobranças; ação de recebimento com escolha de forma. A nova aparência não muda regras de cálculo.
 - Configuração inicial: formulário focado em nome da clínica e profissional com a mesma paleta azul, bordas e tipografia. O acesso com clínica ativa abre o dashboard.

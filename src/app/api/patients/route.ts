@@ -3,18 +3,20 @@ import { z } from "zod";
 import { getDashboardContext } from "@/lib/data/dashboard";
 import { createClient } from "@/lib/supabase/server";
 
-const patientSchema = z.object({
-  displayName: z.string().trim().min(2).max(120),
-  legalName: z.string().trim().max(160).optional().default(""),
+const patientFields = {
+  fullName: z.string().trim().min(2).max(160).optional(),
+  displayName: z.string().trim().min(2).max(120).optional(),
+  legalName: z.string().trim().max(160).optional(),
   birthDate: z.string().trim().max(10).optional().default(""),
   phone: z.string().trim().max(30).optional().default(""),
   email: z.string().trim().email().max(160).optional().or(z.literal("")).default(""),
   notes: z.string().trim().max(2000).optional().default(""),
-});
+};
+const patientSchema = z.object(patientFields).refine((values) => Boolean(values.fullName || values.legalName || values.displayName), { message: "Nome completo obrigatório" });
 
-const patientUpdateSchema = patientSchema.extend({
+const patientUpdateSchema = z.object({ ...patientFields,
   id: z.string().uuid(),
-});
+}).refine((values) => Boolean(values.fullName || values.legalName || values.displayName), { message: "Nome completo obrigatório" });
 
 export const dynamic = "force-dynamic";
 
@@ -61,13 +63,14 @@ export async function POST(request: NextRequest) {
   }
 
   const values = parsed.data;
+  const fullName = values.fullName || values.legalName || values.displayName!;
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("patients")
     .insert({
       organization_id: context.organizationId,
-      display_name: values.displayName,
-      legal_name: values.legalName || null,
+      display_name: fullName,
+      legal_name: fullName,
       birth_date: values.birthDate || null,
       phone_e164: values.phone || null,
       email: values.email || null,
@@ -96,12 +99,13 @@ export async function PATCH(request: NextRequest) {
   }
 
   const { id, ...values } = parsed.data;
+  const fullName = values.fullName || values.legalName || values.displayName!;
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("patients")
     .update({
-      display_name: values.displayName,
-      legal_name: values.legalName || null,
+      display_name: fullName,
+      legal_name: fullName,
       birth_date: values.birthDate || null,
       phone_e164: values.phone || null,
       email: values.email || null,

@@ -6,7 +6,7 @@ import { Plus, X } from "lucide-react";
 export type PatientOption = { id: string; display_name: string };
 
 export function QuickCreatePatient({ onClose, onCreated }: { onClose: () => void; onCreated: (patient: PatientOption) => void }) {
-  const [displayName, setDisplayName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
@@ -33,7 +33,7 @@ export function QuickCreatePatient({ onClose, onCreated }: { onClose: () => void
       const response = await fetch("/api/patients", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ displayName, phone, email }),
+        body: JSON.stringify({ fullName, phone, email }),
       });
       const payload = await response.json();
       if (!response.ok) {
@@ -59,7 +59,7 @@ export function QuickCreatePatient({ onClose, onCreated }: { onClose: () => void
         <button type="button" aria-label="Fechar cadastro rápido" onClick={onClose} className="grid size-9 shrink-0 place-items-center rounded-xl text-muted-foreground hover:bg-surface-muted"><X size={18} /></button>
       </div>
       <form onSubmit={submit} className="mt-6 space-y-4">
-        <label className="block"><span className="mb-2 block text-sm font-medium">Nome de exibição</span><input ref={nameRef} required minLength={2} maxLength={120} value={displayName} onChange={(event) => setDisplayName(event.target.value)} className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm" placeholder="Nome do paciente" /></label>
+        <label className="block"><span className="mb-2 block text-sm font-medium">Nome completo</span><input ref={nameRef} required minLength={2} maxLength={160} value={fullName} onChange={(event) => setFullName(event.target.value)} className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm" placeholder="Nome completo do paciente" /></label>
         <label className="block"><span className="mb-2 block text-sm font-medium">Telefone <span className="font-normal text-muted-foreground">(opcional)</span></span><input type="tel" maxLength={30} value={phone} onChange={(event) => setPhone(event.target.value)} className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm" /></label>
         <label className="block"><span className="mb-2 block text-sm font-medium">E-mail <span className="font-normal text-muted-foreground">(opcional)</span></span><input type="email" maxLength={160} value={email} onChange={(event) => setEmail(event.target.value)} className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm" /></label>
         {error ? <p role="alert" className="rounded-xl bg-danger/5 px-3 py-2 text-sm text-danger">{error}</p> : null}
